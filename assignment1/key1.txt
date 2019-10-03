@@ -1,0 +1,17 @@
+1.1
+1. emacs exer1.html
+2. C-s H T M L Enter
+3. C-s s c a v e n g e r M-b
+4. C-s s e l f - r e f e r e n t i a l M-b M-b
+5. C-s a r r o w M-b
+6. C-e
+7. C-a
+8. (Answer to question:)I did not use arrow keys in previous tasks.
+9. (Answer to question:)I did not use arrow keys in previous tasks.
+10. C-x C-c
+
+1.2
+1. emacs exer2.html
+2. M-g M-g 1 8 Enter C-space down down down down Delete
+3. C-s < ! - - C-a C-space down Delete
+4. C-s < ! - - C-a C-space down down down Delete
