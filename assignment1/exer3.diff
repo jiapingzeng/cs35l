@@ -1,0 +1,29 @@
+--- exer1.html	2019-10-03 15:08:21.869356000 -0700
++++ exer3.html	2019-10-03 22:41:26.192284000 -0700
+@@ -1,8 +1,8 @@
+ <!DOCTYPE html>
+ <html lang='en'>
+ <head>
+-<title>Assignment 1. Getting to know your system</title>
+-<meta charset='UTF-8'>
++<title>Assignment 42. Getting to know your system</title>
++<meta charset='US-ASCII'>
+ <link rel='author' href='mailto:eggert@cs.ucla.edu'>
+ <link rel='license' href='copyright.html'>
+ </head>
+@@ -16,7 +16,6 @@
+ <section>
+ <h2>Laboratory: Linux and Emacs scavenger hunt</h2>
+ 
+-<!-- diff，在UNIX系統上的一個工具程式，它可以比較兩個檔案之間的不同。通常它被用來比較同一個檔案，在不同版本間的差異。它可以產生一個擴展名為.diff或.patch的檔案，這個檔案可以被另一個工具程式patch來使用。-->
+ 
+ <p>Instructions: Do this assignment on the SEASnet GNU/Linux servers
+ <samp>lnxsrv06</samp>, <samp>lnxsrv07</samp>,
+@@ -122,6 +121,7 @@
+ and the directory listing of the Emacs <samp>dired</samp> command?
+ List any shell or Emacs commands you used to answer this question.</li>
+ </ol>
++
+ </section>
+ 
+ <section>
