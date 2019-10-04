@@ -12,6 +12,21 @@
 
 1.2
 1. emacs exer2.html
-2. M-g M-g 1 8 Enter C-space down down down down Delete
+2. M-g M-g 1 8 Enter C-space down down down Delete
 3. C-s < ! - - C-a C-space down Delete
 4. C-s < ! - - C-a C-space down down down Delete
+5. C-s < ! - - left left left left Delete Delete Delete Delete Delete Delete Delete
+Down C-a C-space down down down down Delete
+C-s < ! - - C-a C-space down Delete
+C-x C-s C-x C-c
+
+1.3
+1. emacs exer3.html
+2. C-s Assignment 1 Enter Backspace 4 2
+3. Down Backspace Backspace Backspace Backspace S - A S C I I
+4. M-C-s [ ^ [ : a s c i i : ] ] C-a C-space down down Delete
+5. C-s < / o l > Enter Enter
+6. C-x C-s C-x C-c
+
+1.4
+1. 
