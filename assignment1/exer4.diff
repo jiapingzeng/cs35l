@@ -1,0 +1,116 @@
+--- exer1.html	2019-10-03 15:08:21.869356000 -0700
++++ exer4.html	2019-10-04 16:45:09.915026000 -0700
+@@ -43,7 +43,7 @@
+ introductions and tutorials.
+ </p>
+ 
+-<ol>
++<oL>
+ <li>
+ What shell command uses the <samp>man</samp> program
+ to print all the commands that have a specific
+@@ -161,7 +161,7 @@
+ <section>
+ <h3>Exercise 1.1: Moving around in Emacs</h3>
+ 
+-<ol>
++<oL>
+ <li>Use Emacs to edit the file <samp>exer1.html</samp>.</li>
+ <li>Move the cursor to just after the first occurrence of the word "HTML" (all upper-case).</li>
+ <li>Now move the cursor to the start of the first later occurrence of the word "scavenger".</li>
+@@ -183,7 +183,7 @@
+ <section>
+ <h3>Exercise 1.2: Deleting text in Emacs</h3>
+ 
+-<ol>
++<oL>
+ <li>Use Emacs to edit the file <samp>exer2.html</samp>. The idea is to
+ delete its HTML comments; the resulting page should display the same
+ text as the original.</li>
+@@ -213,7 +213,7 @@
+ <section>
+ <h3>Exercise 1.3: Inserting text in Emacs</h3>
+ 
+-<ol>
++<oL>
+ <li>Use Emacs to edit the file <samp>exer3.html</samp>.</li>
+ 
+ <li>Change the first two instances of "Assignment 1" to "Assignment 42".</li>
+@@ -238,7 +238,7 @@
+ that you should know, like copy and paste, search and replace, and undo.
+ </p>
+ 
+-<ol>
++<oL>
+ <li>Execute the command "<samp>cat exer2.html exer2.diff &gt;exer4.html</samp>"
+ to create a file <samp>exer4.html</samp> that contains a copy of <samp>exer2.html</samp> followed by a copy of <samp>exer2.diff</samp>.</li>
+ <li>Use Emacs to edit the file <samp>exer4.html</samp>.
+@@ -279,7 +279,7 @@
+ Do these tasks all within Emacs. Don't use a shell subcommand
+ if you can avoid it.</p>
+ 
+-<ol>
++<oL>
+ <li>Create a new directory named "<samp>junk</samp>" that's right under
+ your home directory.</li>
+ 
+@@ -329,7 +329,7 @@
+ <section>
+ <h3>Exercise 1.6: Running Elisp code</h3>
+ 
+-<ol>
++<oL>
+ <li>Visit Emacs's <samp>*scratch*</samp> buffer.</li>
+ 
+ <li>In the buffer, seed the random number generator with your student
+@@ -412,7 +412,7 @@
+ <samp>LC_ALL=C awk '/[^\t\f -~]/' key1.txt ans1.txt #</samp> <em>(if you submit .txt files)</em>
+ </pre>
+ 
+-<p>should output nothing<!---->.</p>
++<p>should output nothing.<!----></p>
+ <!--
+ <p>Or maybe more lines, if something has gone wrong.</p>
+ -<->-
+@@ -435,3 +435,41 @@
+ </body>
+ </html>
+ <!-- end of HTML resource -->
++<!--
++--- exer1.html	2019-10-03 15:08:21.869356000 -0700
+++++ exer2.html	2019-10-03 15:19:40.151065000 -0700
++@@ -16,8 +16,6 @@
++ <section>
++ <h2>Laboratory: Linux and Emacs scavenger hunt</h2>
++ 
++ <p>Instructions: Do this assignment on the SEASnet GNU/Linux servers
++ <samp>lnxsrv06</samp>, <samp>lnxsrv07</samp>,
++ <samp>lnxsrv09</samp>, or <samp>lnxsrv10</samp>,
++@@ -127,7 +125,6 @@
++ <section>
++ <h2>Homework: Learning to use Emacs</h2>
++ 
++ 
++ <ul>
++  <li>Keith Waclena, <a
++@@ -366,9 +363,6 @@
++ <section>
++ <h2>Submit</h2>
++ 
++ 
++ <p>Submit the following two files, in either plain-text or Org format
++ (your choice).</p>
++@@ -412,11 +406,7 @@
++ <samp>LC_ALL=C awk '/[^\t\f -~]/' key1.txt ans1.txt #</samp> <em>(if you submit .txt files)</em>
++ </pre>
++ 
++-<p>should output nothing.</p>
+++<p>should output nothing.</p>
++ </section>
++ 
++ <footer>
++@@ -434,4 +424,3 @@
++ 
++ </body>
++ </html>
++-->
