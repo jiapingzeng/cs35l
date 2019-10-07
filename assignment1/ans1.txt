@@ -1,0 +1,42 @@
+1. man -k OR man --apropos 
+Inspected -k, --apropos in man man
+2. /usr/local/cs/bin/mv, /usr/bin/sh
+commands used: which mv, which sh
+Inspected man page of which
+3. ar, pr, tr
+command used: ls /usr/bin/ | grep -w ^.r$
+Inspected man page of grep to find a word regex option
+4. /etc/alternatives/emacs
+command used: ls -l /usr/bin/emacs
+I ran the above command and found the destination of the symlink
+5. (/usr/bin/gcc:)gcc version 4.8.5 20150623 (Red Hat 4.8.5-39) (GCC)
+(gcc:)gcc version 9.2.0 (GCC)
+commands used: gcc -v, /usr/bin/gcc -v
+They are different because their target and version numbers are different
+Inspected --version in man page
+6. u+sx gives user setuid and execute permission; o-w removes the write permission from others
+Inspected description section in man page
+7. command used: find /usr/local/cs -type d -mtime -28
+Output (first 5):
+/usr/local/cs
+/usr/local/cs/src/bison
+/usr/local/cs/src/bison/RCS
+/usr/local/cs/src/gnuplot
+/usr/local/cs/src/gnuplot/RCS
+total 175
+Inspected man page for parameters and formats, then ran the command wc -l to get the total entries
+8. 280
+commands used: man find, man wc, find -L /usr/bin -xtype l | wc -l
+Inspected man page of find and wc for options
+9. librom1394.so.0.3.0
+command used: ls -lat /usr/lib64/
+Inspected man page of ls for -l, -a and -t
+10./usr/lib/locale/locale-archive and /usr/share/i18n/locales
+Inspected "files" section of man page
+11. downcase-dwim, downcase-region, downcase-word
+command used: C-h a downcase
+Inspected Emacs refcard and found "C-h a" to show commands matching a string
+12. 
+13. 
+14. 
+15. 
