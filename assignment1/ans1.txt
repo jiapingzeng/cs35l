@@ -31,12 +31,20 @@ Inspected man page of find and wc for options
 9. librom1394.so.0.3.0
 command used: ls -lat /usr/lib64/
 Inspected man page of ls for -l, -a and -t
-10./usr/lib/locale/locale-archive and /usr/share/i18n/locales
-Inspected "files" section of man page
+10. Locale gets its data from the LC variabls
 11. downcase-dwim, downcase-region, downcase-word
 command used: C-h a downcase
 Inspected Emacs refcard and found "C-h a" to show commands matching a string
-12. 
-13. 
-14. 
-15. 
+12. C-M-r: reverse regex search
+C-M-s: regex search
+C-M-t: transpose sexps
+C-M-u: backward up list
+C-M-v: scroll help window
+command used: C-h b
+I inspected the GNU emacs refcard and was able to locate the above commands there except C-M-u, which I was able to find using C-h b.
+13. C-g cancels the current command in emacs (similar to ctrl-c in terminal)
+I inpsected the GNU emacs refcard and tried it out in emacs
+14. yank pastes the previously killed (cut) thing and can be activated using C-y
+I inspected the GNU emacs refcard and was able to find yank there, then verified within emacs
+15. Emacs dired lists current and parent directories as files on top whereas ls -l does not. In addition, they seem to calculate size different as emacs shows 326744 vs 326660 shown by ls -l.
+I observed the output of ls -l and emacs dired in /usr/bin

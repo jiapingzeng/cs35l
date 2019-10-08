@@ -31,7 +31,7 @@ C-x C-s C-x C-c
 1.4
 1. cat exer2.html exer2.diff >exer4.html
 2. emacs exer4.html
-3. C-x ] Up C-Space Down C-w C-s </html> C-s Down C-a C-y Up Delete
+3. C-x ] Up C-Space Down C-w C-s < / h t m l > C-s Down C-a C-y Up Delete
 4. C-x ] C-r - < ! - - C-Space down down down down C-w C-x [ C-s s h o u l d space o u t p u t Down C-a C-y Up Delete Up Delete Up Delete Up Delete
 C-x ] C-r < ! - - C-space right right right right right right right C-w C-x [ C-s n o t h i n g . Enter C-y
 C-x ] C-r - < ! - - C-Space down down down C-w C-x [ C-s S u b m i t SPACE < / h 2 > Down Down C-y Up Delete Up Delete Up Delete
@@ -56,5 +56,24 @@ C-x [ M-% < o l > Enter < o L > Enter !
 2. (result from "905-363-270":)-119777004673713692
 3. (x:)-807193043165204862
 (y:)-1005651712109961124
-4: (result:)847425530197636792
-5: (result:)847425530197636792847425530197636792 (#o57025220364501573270, #xbc2a907a506f6b8)
+4. (result:)847425530197636792
+5. (result:)847425530197636792 (#o57025220364501573270, #xbc2a907a506f6b8)
+I noticed that eval-expression provided an extra pair of output, but is otherwise the same
+6. They are not. I was able to repeat the above steps and get the same result. My guess is that since the random object was initiated with my student ID as the seed, the numbers are generated based on that seed, allowing me to repeat the steps and get the same "random" numbers.
+7. By experiment, it seems that both random and multiply return numbers that are the most 19 digits. Therefore, it is most likely that the return type of both functions are int64, with a min value of -9223372036854775808 and a max value of 9223372036854775807. 
+I used the below C++ script to estimate the probability of x*y not overflowing. In the script, the variable max is the max value of x and y. If the product of x and y does not exceed the max value, no overflow would happen and the count varialbe is incremented. Once we have the count of all the cases where overflow does not happen, we can devide the count by the total number of cases, which is max squared.
+I tried different max values and the program was able to finish in a reasonable time up to around 100000000. As the max value increases, the probability decreases significantly. When max is 100000000, the probability of no overflow is approximately 2.0^(10^-7). Based on this result, I concluded that increasing the max all the way to the max value of int64 (which is significantly larger than 100000000) would only decrease the probability further. As such, the probability of (* x y) evaluating correctly is essentially 0. Note: negative cases are ignored in the approximation as they does not affect the probability significantly.
+program used:
+#include <iostream>
+int main() {
+	long max = 100000000;
+	int count = 0;
+	for (int x = 0; x <= max; x++) {
+		for (int y = 0; y <= max; y++) {
+			if (x * y <= max) count++;
+			else break;
+		}
+	}
+	std::cout << "probability: " << count << "/" << max*max << std::endl; 
+	return 0;
+}
