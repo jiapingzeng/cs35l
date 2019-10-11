@@ -1,0 +1,14 @@
+0. 
+cp /usr/share/dict/words .
+sort words | cat > words
+
+tr -c 'A-Za-z' '[\n*]'
+replaces non-alphabet characters with newlines
+
+tr -cs 'A-Za-z' '[\n*]'
+same as above but removes duplicates
+
+tr -cs 'A-Za-z' '[\n*]' | sort
+tr -cs 'A-Za-z' '[\n*]' | sort -u
+tr -cs 'A-Za-z' '[\n*]' | sort -u | comm - words
+tr -cs 'A-Za-z' '[\n*]' | sort -u | comm -23 - words # ENGLISHCHECKER
