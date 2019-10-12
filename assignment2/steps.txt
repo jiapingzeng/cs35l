@@ -6,9 +6,15 @@ tr -c 'A-Za-z' '[\n*]'
 replaces non-alphabet characters with newlines
 
 tr -cs 'A-Za-z' '[\n*]'
-same as above but removes duplicates
+same as above but removes adjacent repeats
 
 tr -cs 'A-Za-z' '[\n*]' | sort
+same as above but sorts the words
+
 tr -cs 'A-Za-z' '[\n*]' | sort -u
+same as above but removes duplicates
+
 tr -cs 'A-Za-z' '[\n*]' | sort -u | comm - words
+
+
 tr -cs 'A-Za-z' '[\n*]' | sort -u | comm -23 - words # ENGLISHCHECKER

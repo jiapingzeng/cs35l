@@ -1,0 +1,36 @@
+#! /bin/sh
+
+find_poorname () {
+    if [ $# = 1 -a $(echo "$1" | cut -c1-1) = '-' ]; then
+        local firstchar=$(echo "$1" | cut -c1-1)
+        if [ $firstchar = '-' ]; then 
+            echo "Invalid" 1>&2;
+            exit 1;
+        fi
+    fi
+    # check if multiple input TODO: support -r
+    if [ "$#" -gt 1 ]; then
+        echo "Invalid argument" 1>&2;
+        exit 1;
+    fi
+    DIR=$([ -z "$1" ] && echo "./" || echo "$1")
+    # make sure input is a directory
+    if [ ! -d $DIR ]; then
+        echo "$DIR is not a directory" 1>&2;
+        exit 1;
+    fi
+    # TODO: change find type to file and symlink
+    find $DIR * -printf '%P\n' | grep "[^a-zA-Z._-]" --color=always
+}
+
+find_poorname $@
+
+: '
+for arg in "$@"
+do
+    if [ "$arg" == "-r" ] || [ "$arg" == "--recursive" ]
+    then
+        echo "recursive"
+    fi
+done
+'
