@@ -1,13 +1,10 @@
 #! /bin/sh
 
 find_poorname () {
-    if [ $# = 1 -a $(echo "$1" | cut -c1-1) = '-' ]; then
-        local firstchar=$(echo "$1" | cut -c1-1)
-        if [ $firstchar = '-' ]; then 
-            echo "Invalid" 1>&2;
-            exit 1;
-        fi
-    fi
+    #if [ $# = 1 -o \( $(echo "$1" | cut -c1-1) = '-' \) ]; then
+    #    echo "Invalid" 1>&2;
+    #    exit 1;
+    #fi
     # check if multiple input TODO: support -r
     if [ "$#" -gt 1 ]; then
         echo "Invalid argument" 1>&2;
@@ -20,7 +17,13 @@ find_poorname () {
         exit 1;
     fi
     # TODO: change find type to file and symlink
-    find $DIR * -printf '%P\n' | grep "[^a-zA-Z._-]" --color=always
+    find $DIR -maxdepth 1 | while read -r line; do
+        filename=$(basename "$line")
+        valid=$(echo "$filename" | grep "[^a-zA-Z._-]")
+        if [ "$valid" ]; then
+            echo $line
+        fi
+    done
 }
 
 find_poorname $@
