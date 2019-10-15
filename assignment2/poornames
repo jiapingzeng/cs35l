@@ -23,9 +23,13 @@ fi
 # adjust maxdepth based on -r flag
 if [ $REC -eq 0 ]
 then
-    find "$DIR" -exec sh -c 'path="$1"; name=$(basename "$1" | grep -E "[^a-zA-Z._-]|.{15,}|^-|^\." | grep -Evw "\.|\.\."); [ -n "$name" ] && echo $path' _ {} \; 
+    find "$DIR" -exec sh -c 'path="$1"; name=$(basename "$1" | \grep -E \
+    "[^a-zA-Z._-]|.{15,}|^-|^\." | grep -Evw "\.|\.\."); [ -n "$name" ] \
+    && echo $path' _ {} \; 
     find "$DIR" | sort -f | uniq -Di
 else
-    find "$DIR" -maxdepth 1 -exec sh -c 'path="$1"; name=$(basename "$1" | grep -E "[^a-zA-Z._-]|.{15,}|^-|^\." | grep -Evw "\.|\.\."); [ -n "$name" ] && echo $path' _ {} \; 
+    find "$DIR" -maxdepth 1 -exec sh -c 'path="$1"; name=$(basename "$1" \
+    | grep -E "[^a-zA-Z._-]|.{15,}|^-|^\." | grep -Evw "\.|\.\."); [ -n \
+    "$name" ] && echo $path' _ {} \; 
     find "$DIR" -maxdepth 1 | sort -f | uniq -Di
 fi

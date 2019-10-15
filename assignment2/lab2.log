@@ -10,12 +10,24 @@ same as above but sorts the result
 tr -cs 'A-Za-z' '[\n*]' | sort -u
 same as above but removes duplicates
 tr -cs 'A-Za-z' '[\n*]' | sort -u | comm - words
-compares the previous result with words; the results are placed in three columns: 1) lines only in input file 2) lines only in words 3) lines in both files
+compares the previous result with words; the results are placed in three \
+columns: 1) lines only in input file 2) lines only in words 3) lines in \
+both files
 tr -cs 'A-Za-z' '[\n*]' | sort -u | comm -23 - words # ENGLISHCHECKER
-sames as above but only shows column 1 (suppresses 2 and 3); # treats the rest of the line as a comment
+sames as above but only shows column 1 (suppresses 2 and 3); # treats the \
+rest of the line as a comment
 
 buildwords:
-I initially tried to process the html using grep, sed and regex, but was not able to get it to work reliably due to small varieties in the <td> elements such as style and font. I ended up using a while loop to go through the input line by line and filter out only the <td> elements. Then, I took the odd lines which are the hawaiian words and processed them according to given specs. This approach seems slower as the script takes a few seconds to generate hwords, but it extracts the hawaiian words reliably. The last piece of the puzzle was getting buildwords to read from stdin. At first I used "$1" to accept input, but that does not work for piping. After switching it to "${1:-/dev/stdin}" I was able to read from both stdin and script input.
+I initially tried to process the html using grep, sed and regex, but was not \
+able to get it to work reliably due to small varieties in the <td> elements \
+such as style and font. I ended up using a while loop to go through the input \
+line by line and filter out only the <td> elements. Then, I took the odd lines \
+which are the hawaiian words and processed them according to given specs. This \
+approach seems slower as the script takes a few seconds to generate hwords, \
+but it extracts the hawaiian words reliably. The last piece of the puzzle was \
+getting buildwords to read from stdin. At first I used "$1" to accept input, \
+but that does not work for piping. After switching it to "${1:-/dev/stdin}" \
+I was able to read from both stdin and script input.
 
 command used to generate hwords:
 ./buildwords hwnwdshw.htm | cat > hwords
