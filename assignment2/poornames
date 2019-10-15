@@ -1,12 +1,27 @@
 #! /bin/sh
 
-if [ "$#" -gt 1 ]; then
+if [ "$#" -gt 2 ]; then
     echo "Invalid number of arguments" 1>&2
     exit 1
 fi
-DIR=$([ -z "$1" ] && echo "./" || echo "$1")
+if [ "$1" = "-r" ]
+then
+    REC=0
+    DIR=$([ -z "$2" ] && echo "." || echo "$2")
+else
+    REC=1
+    DIR=$([ -z "$1" ] && echo "." || echo "$1")
+fi
 if [ ! -d "$DIR" ]; then
     echo "$DIR is not a directory" 1>&2
     exit 1
 fi
-find "$DIR" -exec basename {} \; | grep -E ".{14,}|^-|^\.|[^a-zA-Z._-]" | grep -Evw ".|.."
+
+if [ $REC -eq 0 ]
+then
+    find "$DIR" -exec sh -c 'path="$1"; name=$(basename "$1" | grep -E "[^a-zA-Z._-]|.{15,}|^-|^\." | grep -Evw "\.|\.\."); [ -n "$name" ] && echo $path' _ {} \; 
+    find "$DIR" | sort -f | uniq -Di
+else
+    find "$DIR" -maxdepth 1 -exec sh -c 'path="$1"; name=$(basename "$1" | grep -E "[^a-zA-Z._-]|.{15,}|^-|^\." | grep -Evw "\.|\.\."); [ -n "$name" ] && echo $path' _ {} \; 
+    find "$DIR" -maxdepth 1 | sort -f | uniq -Di
+fi
