@@ -1,9 +1,12 @@
 #! /bin/sh
 
+# check if there are more than 2 arguments
 if [ "$#" -gt 2 ]; then
     echo "Invalid number of arguments" 1>&2
     exit 1
 fi
+
+# check if -r flag is present and set directory input accordingly
 if [ "$1" = "-r" ]
 then
     REC=0
@@ -17,6 +20,7 @@ if [ ! -d "$DIR" ]; then
     exit 1
 fi
 
+# adjust maxdepth based on -r flag
 if [ $REC -eq 0 ]
 then
     find "$DIR" -exec sh -c 'path="$1"; name=$(basename "$1" | grep -E "[^a-zA-Z._-]|.{15,}|^-|^\." | grep -Evw "\.|\.\."); [ -n "$name" ] && echo $path' _ {} \; 
