@@ -1,0 +1,5 @@
+Q3. the script generates an IndexError from the imported random.py library, \
+as it does not support empty inputs.
+
+Q4. the script generates a SyntaxError as python3 does not support the \
+"except IOError as (errno, strerror)" syntax.

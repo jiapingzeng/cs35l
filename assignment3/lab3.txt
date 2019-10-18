@@ -1,0 +1,77 @@
+touch .foo bar
+/usr/bin/ls -a -a
+> .  ..  .foo  bar
+
+/usr/bin/ls --version
+> ls (GNU coreutils) 8.22
+
+wget ftp://ftp.gnu.org/gnu/coreutils/coreutils-8.29.tar.xz
+wget ftp://ftp.gnu.org/gnu/coreutils/coreutils-8.29.tar.xz.sig
+wget https://ftp.gnu.org/gnu/gnu-keyring.gpg
+gpg --verify --keyring ./gnu-keyring.gpg coreutils-8.29.tar.xz.sig
+> gpg: Signature made Wed Dec 27 10:29:05 2017 PST using RSA key ID 306037D9
+gpg: /u/eng/class/classjze/.gnupg/trustdb.gpg: trustdb created
+gpg: Good signature from "Pdraig Brady <P@draigBrady.com>"
+gpg:                 aka "Pdraig Brady <pbrady@redhat.com>"
+gpg:                 aka "Pdraig Brady <pixelbeat@gnu.org>"
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 6C37 DC12 121A 5006 BC1D  B804 DF6F D971 3060 37D9
+
+tar -xvf coreutils-8.29.tar.xz
+cd coreutils-8.29/
+less INSTALL
+./configure --prefix=/u/eng/class/classjze/coreutilsInstall && make && make install
+
+~/coreutilsInstall/bin/ls -a -A ../
+> .  ..  .foo  bar
+
+wget -O patch_file "https://debbugs.gnu.org/cgi/bugreport.cgi?filename=0001-ls-A-now-overrides-a.patch;bug=30963;att=1;msg=10"
+
+patch -p1 < patch_file
+> patching file NEWS
+Hunk #1 FAILED at 4.
+1 out of 1 hunk FAILED -- saving rejects to file NEWS.rej
+patching file src/ls.c
+Hunk #1 succeeded at 1900 (offset -3 lines).
+patching file tests/local.mk
+patching file tests/ls/a-option.sh
+
+make
+
+> cd . && /bin/sh /u/eng/class/classjze/cs35l/assignment3/coreutils-8.29/build-aux/missing automake-1.15 --gnu Makefile
+/u/eng/class/classjze/cs35l/assignment3/coreutils-8.29/build-aux/missing: line 81: automake-1.15: command not found
+WARNING: 'automake-1.15' is missing on your system.
+         You should only need it if you modified 'Makefile.am' or
+         'configure.ac' or m4 files included by 'configure.ac'.
+         The 'automake' program is part of the GNU Automake package:
+         <http://www.gnu.org/software/automake>
+         It also requires GNU Autoconf, GNU m4 and Perl in order to run:
+         <http://www.gnu.org/software/autoconf>
+         <http://www.gnu.org/software/m4/>
+         <http://www.perl.org/>
+make: *** [Makefile:5997: Makefile.in] Error 127
+
+autoreconf -fi
+make
+
+src/ls -a -A ../
+> .foo bar
+
+
+Q1.
+I ran the below time commands on a large folder (/usr) and the patched version appears to be faster. Removing the condition "if (ignore_mode == IGNORE_DEFAULT)" allowed the patched version to save time.
+
+before patch:
+time ~/coreutilsInstall/bin/ls -a -A -R /usr
+real    0m28.288s
+user    0m1.864s
+sys     0m5.519s
+
+after patch:
+time coreutils-8.29/src/ls -a -A -R /usr
+real    0m19.894s
+user    0m1.465s
+sys     0m3.781s
+
+Q2.
