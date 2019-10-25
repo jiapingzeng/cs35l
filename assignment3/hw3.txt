@@ -1,0 +1,29 @@
+Q1.
+I ran the below time commands on a large folder (/usr) and the patched \ 
+version appears to be faster. Removing the condition "if (ignore_mode \
+ == IGNORE_DEFAULT)" allowed the patched version to save time.
+
+before patch:
+time ~/coreutilsInstall/bin/ls -a -A -R /usr
+real    0m28.288s
+user    0m1.864s
+sys     0m5.519s
+
+after patch:
+time coreutils-8.29/src/ls -a -A -R /usr
+real    0m19.894s
+user    0m1.465s
+sys     0m3.781s
+
+Q2. The version of the patched version of coreutils (8.29) is ahead of the \
+unpatched version installed in /usr/bin (8.22). This could cause compatibility \
+issues and I would check existing integrations in a test environment before \
+implementing the patch on the production environment.
+
+Q3. the script generates an IndexError from the imported random.py library, \
+as it does not support empty inputs.
+
+Q4. the script generates a SyntaxError as python3 does not support the \
+syntax "except IOError as (errno, strerror)".
+
+Q5. it works as expected.
