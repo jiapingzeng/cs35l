@@ -31,7 +31,7 @@ int frobcmp2(void const *a, void const *b)
 
 void freeAll(char *word, char **words, int size)
 {
-    int i;
+    size_t i;
     for (i = 0; i < size; i++)
         free(words[i]);
     free(words);
@@ -54,7 +54,8 @@ int exitMemoryError(char *word, char **words, int size)
 
 int main()
 {
-    int count = 0, size = 0, curr, next, i, j;
+    size_t count = 0, size = 0, i, j;
+    int curr, next;
     char *word = (char *)malloc(sizeof(char));
     char **words = (char **)malloc(sizeof(char *));
     if (word == NULL || words == NULL)

@@ -1,3 +1,6 @@
+# Changed - 2019-10-28 - jiapingzeng@ucla.edu
+  timespec_cmp no longer returns false result when comparing far dates
+
 --- lib/timespec.h	2005-09-21 23:05:39.000000000 -0700
 +++ lib/timespec-patched.h	2019-10-30 21:25:03.348725000 -0700
 @@ -45,8 +45,13 @@
