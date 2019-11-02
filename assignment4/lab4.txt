@@ -1,0 +1,94 @@
+I extracted coreutils and ran configure and make to compile
+$ tar -xzvf coreutils-with-bug.tar.gz
+$ cd coreutils-with-bug/
+$ ./configure && make
+
+Make failed due to error bekiw
+> utimens.h:2:5: error: conflicting types for 'futimens'
+    2 | int futimens (int, char const *, struct timespec const [2]);
+      |     ^~~~~~~~
+
+Downloaded patch and applied using patch command, ran make to compile again
+$ wget "https://web.cs.ucla.edu/classes/fall19/cs35L/assign/coreutils.diff"
+$ patch -p0 < coreutils.diff
+$ make
+
+The rename patch fixed the error because futimens is also defined in stat.h:
+extern int futimens (int __fd, const struct timespec __times[2]) __THROW; 
+
+I then verified the error using the provided scripts (with modified path):
+$ tmp=$(mktemp -d)
+$ cd $tmp
+$ touch -d '1918-11-11 11:00 GMT' wwi-armistice-cs35L
+$ touch now
+$ sleep 1
+$ touch now1
+$ TZ=UTC0 ~/cs35l/assignment4/coreutils-with-bug/src/ls -lt --full-time \
+wwi-armistice-cs35L now now1
+$ cd
+$ rm -rf $tmp
+
+The result (below) does show that the bug is present:
+> -rw-r--r-- 1 classjze class 0 1918-11-11 11:00:00.000000000 +0000 \
+  wwi-armistice-cs35L
+  -rw-r--r-- 1 classjze class 0 2019-10-25 04:26:42.562321200 +0000 now1
+  -rw-r--r-- 1 classjze class 0 2019-10-25 04:26:33.698013656 +0000 now
+
+By inspection of output, it seems that the date comparison ignores the most \
+significant digit in the year. I suspected that this is caused by an overflow \
+error somewhere in the comparison process. Then, by inspecting the source \
+code of ls (ls.c), it seems that the modified time comparison is done in the \
+function cmp_mtime.
+
+I then used gdb to set breakpoint at cmp_mtime, and timespec_cmp. I used the \
+"list" command to view the source code of timespec_cmp, and noted that it was \
+defined in timespec.h. I noticed that timespec_cmp stores the difference \
+between a.tv_sec and b.tv_sec in a int, which is limited to 4 bytes. \
+I suspected that the tv_sec variables were larger than 4 bytes, which \
+caused the difference to turn out incorrect. To confirm this, I used the \
+gdb commands "print sizeof(a.tv_sec)" and "print sizeof(b.tv_sec)", and \
+saw that both of the variables were 8 bytes. Therefore, the difference would \
+not be able to fit in an int type.
+
+To fix this bug, I replaced the code of timespec_cmp with the following:
+  if (a.tv_sec == b.tv_sec) {
+    // time is same in seconds, compare nanoseconds
+    if (a.tv_nsec == b.tv_nsec) return 0;
+    return a.tv_nsec > b.tv_nsec ? 1 : -1;
+  }
+  // return 1 if a is greater, -1 if b is greater
+  return a.tv_sec > b.tv_sec ? 1 : -1;
+
+The new definition would eliminate the possiblity of storing 8 byte \
+data in an int. 
+
+I then generated a patch and applied it
+$ cp lib/timespec.h lib/timespec-patched.h
+$ diff -u lib/timespec.h lib/timespec-patched.h > lab4.diff
+$ patch -p0 < lab4.diff
+$ make
+
+I ran the provided commands once again, and this time the bug is no longer \
+present.
+
+> -rw-r--r-- 1 classjze class 0 2019-10-31 04:37:49.984054205 +0000 now1
+  -rw-r--r-- 1 classjze class 0 2019-10-31 04:37:48.911016194 +0000 now
+  -rw-r--r-- 1 classjze class 0 1918-11-11 11:00:00.000000000 +0000 \
+  wwi-armistice-cs35L
+
+
+When I tried to reproduce the problem in home directory, the file created \
+seem to have the year 2054. I believe this is due to system configuration \
+valid dates in the home directory.
+
+$ touch -d '1918-11-11 11:00 GMT' wwi-armistice-cs35L
+$ touch now
+$ sleep 1
+$ touch now1
+$ TZ=UTC0 ls -lt --full-time wwi-armistice-cs35L now now1
+$ rm wwi-armistice-cs35L now now1
+
+> -rw-r--r-- 1 classjze class 0 2054-12-17 17:28:16.000000000 +0000 \
+  wwi-armistice-cs35L
+  -rw-r--r-- 1 classjze class 0 2019-10-31 04:55:41.638803000 +0000 now1
+  -rw-r--r-- 1 classjze class 0 2019-10-31 04:55:40.528797000 +0000 now
