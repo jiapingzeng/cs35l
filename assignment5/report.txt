@@ -1,0 +1,33 @@
+Lab:
+I used the below strace commands to count the number of system calls made by each script. Although the scripts could be more efficient, they use the same algorithm and these scripts should service as a valid comparison. (bigfile.txt is 6420990 bytes of lorem ipsum)
+
+$ strace –o strace_output./tr2b ‘AB’ ‘XY’ < bigfile.txt
+21120
+$ strace –o strace_output2 ./tr2u ‘AB’ ‘XY’ < bigfile.txt
+12842008
+
+By inspecting the strace outputs, I noticed that the buffered version would call write after a few hundreds of characters are stored, whereas the unbuffered version calls write for every character. This explains why the buffered version is much faster and makes less system calls.
+
+I then ran similar strace commands, but this time outputting to a file instead of stdout. The two commands generated the same number of system calls and much fewer than the previous commands.
+
+$ strace -o strace_file cat bigfile.txt | ./tr2b 'AB' 'XY' | cat > output.txt
+149
+$ strace -o strace_file2 cat bigfile.txt | ./tr2u 'AB' 'XY' | cat > output.txt
+149
+
+I ran a diff check between strace_file and strace_file2, and the only differences were memory addresses, meaning that both versions perform the same actions when outputting to a file.
+
+I then ran the below time commands (output to stdout) and found that the buffered version is roughly 10 times faster.
+
+$ time ./tr2b 'AB' 'XY' < bigfile.txt
+real    0m1.264s
+user    0m0.315s
+sys     0m0.107s
+
+$ time ./tr2u 'AB' 'XY' < bigfile.txt
+real    0m11.765s
+user    0m1.488s
+sys     0m10.236s
+
+
+Homework:
