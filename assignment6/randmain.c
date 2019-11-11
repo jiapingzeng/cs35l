@@ -55,7 +55,7 @@ int main(int argc, char **argv)
   if (rdrand_supported())
   {
     // hardware rand
-    dl = dlopen("./randlibhw.c", RTLD_NOW);
+    dl = dlopen("./randlibhw.so", RTLD_NOW);
     if (!dl || dlerror())
     {
       fprintf(stderr, "Unable to open randlibhw\n");
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
   else
   {
     // software rand
-    dl = dlopen("./randlibsw.c", RTLD_NOW);
+    dl = dlopen("./randlibsw.so", RTLD_NOW);
     if (!dl || dlerror())
     {
       fprintf(stderr, "Unable to open randlibsw\n");
