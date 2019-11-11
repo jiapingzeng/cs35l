@@ -1,0 +1,249 @@
+I compiled simpgmp.c with the command
+$ gcc simpgmp.c -lgmp -o simpgmp
+
+Then I used simpgmp to calculate the 2**24:
+
+$ ./simpgmp 24
+    16777216
+
+I then calculated 2**(2**24) using the below:
+$ ./simpgmp 16777216
+
+... which resulted in a very large number. I verified the first and last four digits using
+
+$ ./simpgmp 16777216 | head -c 4
+    1818
+$ ./simpgmp 16777216 | tail -c 5 #tail includes a newline character, which is why -c 5 is used here
+    7536
+I then verified the size of the number
+
+$ ./simpgmp 16777216 | wc -c
+    5050447
+which matches with 5,050,446 decimal digits as specified in the assignment description because the \
+output includes an extra newline character.
+
+I then checked the dynamic libraries used using ldd
+$ ldd ./simpgmp
+    linux-vdso.so.1 =>  (0x00007ffc5fd4c000)
+    libgmp.so.10 => /lib64/libgmp.so.10 (0x00007f677f1aa000)
+    libc.so.6 => /lib64/libc.so.6 (0x00007f677eddc000)
+    /lib64/ld-linux-x86-64.so.2 (0x00007f677f422000)
+
+I used strace to see what system calls were made during the execution:
+$ strace ./simpgmp 24
+    ...
+    open("/lib64/libgmp.so.10", O_RDONLY|O_CLOEXEC) = 3
+    read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\200\304\0\0\0\0\0\0"..., 832) = 832
+    fstat(3, {st_mode=S_IFREG|0755, st_size=495720, ...}) = 0
+    mmap(NULL, 2584736, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f8559dd4000
+    mprotect(0x7f8559e4a000, 2093056, PROT_NONE) = 0
+    mmap(0x7f855a049000, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x75000) = 0x7f855a049000
+    close(3)
+    ...
+
+I picked out the section that imported libgmp; we see that an "open" system call is used first to \
+open the file, then the libraries is read by "read", and the content is later mapped to memory using "mmap" \
+so that the functions from the library can be used.
+
+$ ldd chmem
+        linux-vdso.so.1 =>  (0x00007ffd7a727000)
+        libc.so.6 => /lib64/libc.so.6 (0x00007fd8759c7000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007fd875d95000)
+
+$ ldd espdiff
+        not a dynamic executable
+
+$ ldd grub2-mkimage
+        linux-vdso.so.1 =>  (0x00007ffe3d742000)
+        liblzma.so.5 => /lib64/liblzma.so.5 (0x00007f874b261000)
+        libdevmapper.so.1.02 => /lib64/libdevmapper.so.1.02 (0x00007f874b00a000)
+        libc.so.6 => /lib64/libc.so.6 (0x00007f874ac3c000)
+        libpthread.so.0 => /lib64/libpthread.so.0 (0x00007f874aa20000)
+        libselinux.so.1 => /lib64/libselinux.so.1 (0x00007f874a7f9000)
+        libsepol.so.1 => /lib64/libsepol.so.1 (0x00007f874a55b000)
+        libudev.so.1 => /lib64/libudev.so.1 (0x00007f874a345000)
+        libm.so.6 => /lib64/libm.so.6 (0x00007f874a043000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f874b487000)
+        libpcre.so.1 => /lib64/libpcre.so.1 (0x00007f8749de1000)
+        libdl.so.2 => /lib64/libdl.so.2 (0x00007f8749bdd000)
+        librt.so.1 => /lib64/librt.so.1 (0x00007f87499d5000)
+        libcap.so.2 => /lib64/libcap.so.2 (0x00007f87497d0000)
+        libdw.so.1 => /lib64/libdw.so.1 (0x00007f874957f000)
+        libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007f8749369000)
+        libattr.so.1 => /lib64/libattr.so.1 (0x00007f8749164000)
+        libelf.so.1 => /lib64/libelf.so.1 (0x00007f8748f4c000)
+        libz.so.1 => /lib64/libz.so.1 (0x00007f8748d36000)
+        libbz2.so.1 => /lib64/libbz2.so.1 (0x00007f8748b26000)
+
+$ ldd jrunscript
+        linux-vdso.so.1 =>  (0x00007ffe968fc000)
+        libpthread.so.0 => /lib64/libpthread.so.0 (0x00007ffaa0c28000)
+        libz.so.1 => /lib64/libz.so.1 (0x00007ffaa0a12000)
+        libjli.so => not found
+        libdl.so.2 => /lib64/libdl.so.2 (0x00007ffaa080e000)
+        libc.so.6 => /lib64/libc.so.6 (0x00007ffaa0440000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007ffaa0e44000)
+
+$ ldd lpr
+        linux-vdso.so.1 =>  (0x00007ffcb6abe000)
+        libcups.so.2 => /lib64/libcups.so.2 (0x00007f1fc621d000)
+        libgssapi_krb5.so.2 => /lib64/libgssapi_krb5.so.2 (0x00007f1fc5fd0000)
+        libkrb5.so.3 => /lib64/libkrb5.so.3 (0x00007f1fc5ce7000)
+        libk5crypto.so.3 => /lib64/libk5crypto.so.3 (0x00007f1fc5ab4000)
+        libcom_err.so.2 => /lib64/libcom_err.so.2 (0x00007f1fc58b0000)
+        libssl.so.10 => /lib64/libssl.so.10 (0x00007f1fc563e000)
+        libcrypto.so.10 => /lib64/libcrypto.so.10 (0x00007f1fc51db000)
+        libavahi-common.so.3 => /lib64/libavahi-common.so.3 (0x00007f1fc4fce000)
+        libavahi-client.so.3 => /lib64/libavahi-client.so.3 (0x00007f1fc4dbd000)
+        libz.so.1 => /lib64/libz.so.1 (0x00007f1fc4ba7000)
+        libpthread.so.0 => /lib64/libpthread.so.0 (0x00007f1fc498b000)
+        libm.so.6 => /lib64/libm.so.6 (0x00007f1fc4689000)
+        libcrypt.so.1 => /lib64/libcrypt.so.1 (0x00007f1fc4452000)
+        libaudit.so.1 => /lib64/libaudit.so.1 (0x00007f1fc4229000)
+        libselinux.so.1 => /lib64/libselinux.so.1 (0x00007f1fc4002000)
+        libc.so.6 => /lib64/libc.so.6 (0x00007f1fc3c34000)
+        libkrb5support.so.0 => /lib64/libkrb5support.so.0 (0x00007f1fc3a24000)
+        libdl.so.2 => /lib64/libdl.so.2 (0x00007f1fc3820000)
+        libkeyutils.so.1 => /lib64/libkeyutils.so.1 (0x00007f1fc361c000)
+        libresolv.so.2 => /lib64/libresolv.so.2 (0x00007f1fc3403000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f1fc668a000)
+        libdbus-1.so.3 => /lib64/libdbus-1.so.3 (0x00007f1fc31b3000)
+        libfreebl3.so => /lib64/libfreebl3.so (0x00007f1fc2fb0000)
+        libcap-ng.so.0 => /lib64/libcap-ng.so.0 (0x00007f1fc2daa000)
+        libpcre.so.1 => /lib64/libpcre.so.1 (0x00007f1fc2b48000)
+        libsystemd.so.0 => /lib64/libsystemd.so.0 (0x00007f1fc2917000)
+        libcap.so.2 => /lib64/libcap.so.2 (0x00007f1fc2712000)
+        librt.so.1 => /lib64/librt.so.1 (0x00007f1fc250a000)
+        liblzma.so.5 => /lib64/liblzma.so.5 (0x00007f1fc22e4000)
+        liblz4.so.1 => /lib64/liblz4.so.1 (0x00007f1fc20cf000)
+        libgcrypt.so.11 => /lib64/libgcrypt.so.11 (0x00007f1fc1e4e000)
+        libgpg-error.so.0 => /lib64/libgpg-error.so.0 (0x00007f1fc1c49000)
+        libdw.so.1 => /lib64/libdw.so.1 (0x00007f1fc19f8000)
+        libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007f1fc17e2000)
+        libattr.so.1 => /lib64/libattr.so.1 (0x00007f1fc15dd000)
+        libelf.so.1 => /lib64/libelf.so.1 (0x00007f1fc13c5000)
+        libbz2.so.1 => /lib64/libbz2.so.1 (0x00007f1fc11b5000)
+
+$ ldd nproc
+        linux-vdso.so.1 =>  (0x00007ffef4b83000)
+        libc.so.6 => /lib64/libc.so.6 (0x00007f633c609000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f633c9d7000)
+
+$ ldd pcdovtoppm
+        not a dynamic executable
+
+$ ldd ppm3d
+        linux-vdso.so.1 =>  (0x00007ffdec3e1000)
+        libnetpbm.so.11 => /lib64/libnetpbm.so.11 (0x00007fcb45070000)
+        libm.so.6 => /lib64/libm.so.6 (0x00007fcb44d6e000)
+        libc.so.6 => /lib64/libc.so.6 (0x00007fcb449a0000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007fcb452b0000)
+
+$ ldd rpminfo
+        not a dynamic executable
+
+ldd tcbmgr
+        linux-vdso.so.1 =>  (0x00007fffebca0000)
+        libtokyocabinet.so.9 => /lib64/libtokyocabinet.so.9 (0x00007f3150b97000)
+        libbz2.so.1 => /lib64/libbz2.so.1 (0x00007f3150987000)
+        libz.so.1 => /lib64/libz.so.1 (0x00007f3150771000)
+        librt.so.1 => /lib64/librt.so.1 (0x00007f3150569000)
+        libpthread.so.0 => /lib64/libpthread.so.0 (0x00007f315034d000)
+        libm.so.6 => /lib64/libm.so.6 (0x00007f315004b000)
+        libc.so.6 => /lib64/libc.so.6 (0x00007f314fc7d000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f3150e1a000)
+
+ldd xml-resolver
+        not a dynamic executable
+
+
+I moved the list of libraries into lab.txt, then used the following commands to format (remove addresses), sort and remove duplicates.
+
+$ cat libs.txt | sed 's/ //g' | sed 's/=>.*//' | sed 's/(.*//' > sorted.txt
+    
+results:
+linux-vdso.so.1
+libc.so.6
+/lib64/ld-linux-x86-64.so.2
+linux-vdso.so.1
+liblzma.so.5
+libdevmapper.so.1.02
+libc.so.6
+libpthread.so.0
+libselinux.so.1
+libsepol.so.1
+libudev.so.1
+libm.so.6
+/lib64/ld-linux-x86-64.so.2
+libpcre.so.1
+libdl.so.2
+librt.so.1
+libcap.so.2
+libdw.so.1
+libgcc_s.so.1
+libattr.so.1
+libelf.so.1
+libz.so.1
+libbz2.so.1
+linux-vdso.so.1
+libpthread.so.0
+libz.so.1
+libjli.so
+libdl.so.2
+libc.so.6
+/lib64/ld-linux-x86-64.so.2
+linux-vdso.so.1
+libcups.so.2
+libgssapi_krb5.so.2
+libkrb5.so.3
+libk5crypto.so.3
+libcom_err.so.2
+libssl.so.10
+libcrypto.so.10
+libavahi-common.so.3
+libavahi-client.so.3
+libz.so.1
+libpthread.so.0
+libm.so.6
+libcrypt.so.1
+libaudit.so.1
+libselinux.so.1
+libc.so.6
+libkrb5support.so.0
+libdl.so.2
+libkeyutils.so.1
+libresolv.so.2
+/lib64/ld-linux-x86-64.so.2
+libdbus-1.so.3
+libfreebl3.so
+libcap-ng.so.0
+libpcre.so.1
+libsystemd.so.0
+libcap.so.2
+librt.so.1
+liblzma.so.5
+liblz4.so.1
+libgcrypt.so.11
+libgpg-error.so.0
+libdw.so.1
+libgcc_s.so.1
+libattr.so.1
+libelf.so.1
+libbz2.so.1
+linux-vdso.so.1
+libc.so.6
+/lib64/ld-linux-x86-64.so.2
+linux-vdso.so.1
+libnetpbm.so.11
+libm.so.6
+libc.so.6
+/lib64/ld-linux-x86-64.so.2
+linux-vdso.so.1
+libtokyocabinet.so.9
+libbz2.so.1
+libz.so.1
+librt.so.1
+libpthread.so.0
+libm.so.6
+libc.so.6
+/lib64/ld-linux-x86-64.so.2
