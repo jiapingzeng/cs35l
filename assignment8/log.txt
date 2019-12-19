@@ -1,0 +1,78 @@
+I connected the BeagleBone to my computer and turned it on. After installing \
+the drivers I navigated to 192.168.7.2 on my browser. A web page popped up with \
+set up instructions so I assumed that the device works properly.
+
+I then ssh'ed into the devices using
+$ ssh debian@192.168.7.2
+and entered the default password when prompted.
+
+I connected to wifi using
+$ connmanctl
+connmanctl> enable wifi
+connmanctl> scan wifi
+    Scan completed for wifi
+connmanctl> services
+connmanctl> agent on
+    Agent registered
+connmanctl> connect wifi_f045daf5ee73_55434c415f574542_managed_none
+connmanctl> quit
+
+To install I updated package lists using
+$ sudo apt-get update
+Then I installed xuath, openssh-server and openssh-client using the below:
+$ sudo apt-get install xauth openssh-server openssh-client
+
+I generated my rsa key pair using
+$ ssh-keygen
+    ...
+    Your identification has been saved in /home/debian/.ssh/id_rsa.
+    Your public key has been saved in /home/debian/.ssh/id_rsa.pub.
+    The key fingerprint is:
+    SHA256:NZHL+TKNYw6WqSVBfG+QKV20RbMlh/H/QRq8lovd60o debian@beaglebone
+    The key's randomart image is:
+    +---[RSA 2048]----+
+    |     . . =+o*oo  |
+    |      + * .+oB   |
+    |     . o ++o.o.. |
+    |      .  .*.  *. |
+    |       .S+ + = ..|
+    |      . * * * o o|
+    |       = + = E ..|
+    |      .   . .   .|
+    |             .oo |
+    +----[SHA256]-----+
+
+To set up the server, I then created an user account for my partner (Omer Katz) \
+and set a password using the below, and created an .ssh folder with proper permissions:
+$ sudo useradd -d /home/omer -m omer
+$ sudo passwd omer
+$ cd /home/omer
+$ sudo mkdir .ssh
+$ sudo chown -R omer .ssh
+$ sudo chmod 700 .ssh
+
+I then installed graphical packages (xterm, gedit, firefox) for my partner to test out:
+$ sudo apt-get install xterm
+$ sudo apt-get install gedit
+$ sudo apt-get install firefox-esr-l10n-en-gb
+
+To check my IP address, I ran
+$ ifconfig
+    ...
+    wlan0:
+        inet 172.28.219.1
+    ...
+and found it under wlan0.
+
+I gave the IP address to my partner and he was able to connect to my BeagleBone and \
+run xterm, gedit and firefox.
+
+We then switched roles and I was the client this time. I used the below to copy my \
+public key to the server, add private key to ssh-agent, and ssh into his server:
+
+$ ssh-copy-id -i jzeng@172.28.157.102
+$ eval `ssh-agent -s`
+$ ssh-add
+$ ssh -X jzeng@172.28.157.102
+
+I was able to connect successfully and run commands.

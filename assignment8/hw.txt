@@ -1,0 +1,24 @@
+I first generated a key using
+$ gpg --gen-key
+and answered its questions when prompted
+
+I then exported the public key as hw-pubkey.asc using 
+$ gpg --output hw-pubkey.asc --armor --export jiapingzeng@ucla.edu
+
+and created a detached signature of eeprom using
+$ gpg --output eeprom.sig --detach-sig eeprom
+
+1. The network should still be secure since the observer do not have the private key; \
+although they would be able to intercept the transferred data, they would not be able \
+to decrypt the data without the private key which is stored locally. If the observer \
+had access to my keystrokes, the network would not be secure since the they would have \
+access to my root password with which they can then ssh into my machine and do a lot of \
+damage. If the they had physical control of the USB, they would be able to read all \
+content including the keys, which they can use to decrypt the data sent over the network.
+
+2. It does not verify that I personally created the file because it only shows that I \
+am the last personal who has potentially modified it. If someone else were to take the \
+file, they can generate their own signature using the same steps I performed above and \
+verify it. One solution to this problem is to use a Certificate Authority (CA) service \
+which is a 3rd party that issues digital certificates. Then by verifying that data was \
+last signed by the CA we can verify the ownership of the file.

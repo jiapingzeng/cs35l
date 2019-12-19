@@ -1,0 +1,72 @@
+1. 
+I used the below commands to get the size of the current directory as well as the .git folder:
+$ du -hs .
+    509M .
+$ du -hs .git
+    350M .
+which means that the files not in the .git folder is 509M-350M=159M and the git repository is 350M. I then used the below command to find the largest 5 files in the directory:
+$ find . -type f -exec du -a {} + | sort -n -r | head -n 3
+    318152  ./.git/objects/pack/pack-24e56b1749b9320c560213d9045fa6cee42b4174.pack
+    23876   ./.git/objects/pack/pack-24e56b1749b9320c560213d9045fa6cee42b4174.idx
+    7888    ./.git/objects/info/commit-graph
+
+2.
+I used the below commands to find the number of local and remote branches:
+$ git branch | wc -l
+    176
+$ git branch -r | wc -l
+    177
+There are 176 local branches and 177 remote ones.
+
+3. 
+I used the below command to list remote repositories and only found one at https://git.savannah.gnu.org/git/emacs.git
+$ git remote -v
+    origin  https://git.savannah.gnu.org/git/emacs.git (fetch)
+    origin  https://git.savannah.gnu.org/git/emacs.git (push)
+
+4. 
+I used the below command to get the names of the 10 branches most recently committed to
+$ git for-each-ref --sort=-committerdate refs/heads/ | head -n 10 | sed -n 's/^.*refs\/heads\///p'
+    master
+    scratch/joaot/make-completion-at-point-function
+    feature/windows-with-utils
+    scratch/completion-api
+    scratch/a-modest-completion-redesign-proposal
+    scratch/fido-mode
+    feature/gnus-select2
+    feature/extend_face_id
+    scratch/jit-lock-antiblink-cleaned-up
+    emacs-26
+
+5. 
+I used the following to get the number of commits in master:
+$ git rev-list --count master
+    139583
+
+6. 
+I found the number of commits in the master branch and all branches using the commands below:
+$ git rev-list --count master
+    139583
+$ git rev-list --count --all
+    143910
+I then divided the first number by the second to find the percentage
+$ echo "scale=2 ; $(git rev-list --count master)/$(git rev-list --count --all)" | bc
+    .96
+and got 96%.
+
+7. 
+I used the below command to find the most frequent committers after 2013 and their number of commits:
+$ git shortlog -sn --since ="01 Jan 2013" | head -n 10
+    3691  Eli Zaretskii
+    3644  Glenn Morris
+    3604  Paul Eggert
+    1806  Lars Ingebrigtsen
+    1784  Stefan Monnier
+    1571  Michael Albinus
+    619  Dmitry Gutov
+    576  Noam Postavsky
+    471  Alan Mackenzie
+    469  Juri Linkov
+
+8.
+$ gitk 4ea37c2b8b0c5a68fde59770c3536195e0972217 977cd6cb28a37744966ec62f70cf62659f6f302a 625cee531623feddbe3174fad52c7db96ec60bb3 5490ccc5ebf39759dfd084bbd31f464701a3e775 0c06b93c1e467debd401eb0b3be4652fde14fa95 820739bbb572b30b6ce45756c9960e48dca859af 00e4e3e9d273a193620c3a4bb4914e555cb8e343 49cd561dc62ea6b3fbedab7aef0f020733f4cf09 abcb2e62dae6aa26308f7ac9efc89247f89cbe65 98ac36efe4ce4bd3a0bca76fc73ce6c7abaa4371

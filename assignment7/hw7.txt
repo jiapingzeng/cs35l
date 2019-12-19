@@ -1,0 +1,86 @@
+I set up a fresh copy of diffutils, copied patch file into the directory, then \
+checked out version 3.0 into a new brance named "quote" as specified.
+
+$ git clone https://git.savannah.gnu.org/git/diffutils.git diffutils-hw
+$ cp quote-3.0-patch.txt diffutils-hw/
+$ cd diffutils-hw
+$ git checkout 022cd5c5eb647a22a4daa5fe5cbc10af6d5a1112 -b quote
+    M       src/cmp.c
+    M       src/diff.c
+    M       src/diff3.c
+    M       src/dir.c
+    M       src/sdiff.c
+    M       src/util.c
+    Switched to a new branch 'quote'
+
+I then installed the patch using the previously generated patch file
+$ patch -p1 < quote-3.0-patch.txt
+    patching file src/cmp.c
+    patching file src/diff.c
+    patching file src/diff3.c
+    patching file src/dir.c
+    patching file src/sdiff.c
+    patching file src/util.c
+
+I created a ChangeLog of quote-3.0-patch.txt using emacs add-change-log-entry-\
+other-window (C-x 4 a), then pasted in the original description as instructed.
+
+I verified the changes using git status, then added and commited them with \
+ChangeLog as the message.
+$ git clean -f
+$ git status
+$ git commit -F ChangeLog
+    [quote 1272773] 2019-11-20  Jiaping Zeng  <classjze@lnxsrv06.seas.ucla.edu>
+     6 files changed, 44 insertions(+), 44 deletions(-)
+
+I then generated the formatted patch as described using git format patch:
+$ git format-patch -1 HEAD --stdout > formatted-patch.txt
+
+Partner: Kuo-Hsuan (Shren) Tseng: 405356615
+
+I created a new branch of v3.0 and applied my partner's patch as below:
+$ git checkout 022cd5c5eb647a22a4daa5fe5cbc10af6d5a1112 -b partner
+$ git am < formatted-patch-shren.txt
+    Applying: 2019-11-17 Kuo-Hsuan Tseng <classkts@lnxsrv07.seas.ucla.edu>
+
+I compiled using the below commands then ran make check.
+$ ./bootstrap
+$ ./configure
+$ make
+$ make check
+
+Similar to the lab, make check generated errors that are the same as the ones \
+I got during the lab. Per Piazza #440, I recorded the errors and verified using \
+the newly compiled diff command instead.
+$ make check
+    ...
+    make: *** [Makefile:1017: check-recursive] Error 1
+$ make check SHELL='sh -x'
+    ...
+    make: *** [Makefile:1017: check-recursive] Error 1
+$ src/diff . -
+    src/diff: cannot compare '-' to a directory 
+$ src/diff --help
+    ...
+    LTYPE is 'old', 'new', or 'unchanged'.  GTYPE is LTYPE or 'changed'.
+    ...
+
+I then ran
+$ make distdir
+
+which generated a new folder named diffutils-3.0.1-903c. I inspected the \
+ChangeLog and saw that my partner's name show up correctly.
+$ less diffutils-3.0.1-903c/ChangeLog
+    2019-11-20  Kuo-Hsuan Tseng  <classkts@lnxsrv07.seas.ucla.edu>
+    ...
+
+I logged out of SEASnet and installed VcXsrv on my computer (Windows with WSL). \
+I then reconnected to SEASnet with an -Y flag to enable trusted X11 forwarding.
+
+$ ssh classjze@lnxsrv05.seas.ucla.edu -Y
+$ cd ~eggert/src/gnu/emacs
+$ gitk
+
+I scrolled down to find the described commit and found the following:
+* indent/shell.sh (bar): Use '[ $# -eq 0 ]', not '[ $# == 0 ]'. | Paul Eggert \
+<eggert@cs.ucla.edu> | 2015-01-24 19:00:41
