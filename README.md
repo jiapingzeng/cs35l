@@ -12,4 +12,5 @@ UCLA CS35L - Fall 2019
 |6. Dynamic linking|87|
 |7. Basic git|81|
 |8. SSH setup/applications|84|
-|9. More git (with python)|-|
+|9. More git (with python)|71|
+|10. Presentation|94|
