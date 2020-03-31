@@ -1,8 +1,8 @@
-UCLA CS35L - Fall 2019
+UCLA CS35L: Software Construction Laboratory - Fall 2019
 
 [Course site](https://web.cs.ucla.edu/classes/fall19/cs35L/)
 
-|assignment|score*|class average|
+|assignment|correctness|class average|
 |----------|-----|---------|
 |1. Linux basics/emacs|100|92.5|
 |2. Shell scripting|90|77|
@@ -14,5 +14,3 @@ UCLA CS35L - Fall 2019
 |8. SSH setup/applications|100|-|
 |9. More git (with python)|71|51|
 |10. Presentation|94|-|
-
-*listed assignment scores are correctness points and do not include late penalty
